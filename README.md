@@ -1,219 +1,191 @@
-📚 Hostel Management System
+# 📚 Hostel Management System
 
 A complete Hostel Management System (HMS) built using Node.js, Express, MySQL, and a lightweight HTML/CSS/JS frontend.
 This project manages students, rooms, allotments, leaves, maintenance, and notices — all through a simple API-driven admin panel.
 
-🚀 Features
-🔐 Authentication
+## 🚀 Features
 
-Admin login system
+### 🔐 Authentication
 
-Secure route handling
+- Admin login system
 
-Token-based authentication (demo token — can be upgraded to JWT)
+- Secure route handling
 
-🧑‍🎓 Student Management
+- Token-based authentication (demo token — can be upgraded to JWT)
 
-Add new students
+### 🧑‍🎓 Student Management
 
-View all registered students
+- Add new students
 
-Update or delete student entries
+- View all registered students
 
-🏠 Room & Hostel Management
+- Update or delete student entries
 
-Add and manage hostel blocks
+### 🏠 Room & Hostel Management
 
-Add, view, update, or delete rooms
+- Add and manage hostel blocks
 
-Track room capacity and availability
+- Add, view, update, or delete rooms
 
-🛏 Allotment System
+- Track room capacity and availability
 
-Assign students to rooms
+### 🛏 Allotment System
 
-Track who is allotted to which hostel/room
+- Assign students to rooms
 
-Update or vacate room allotments
+- Track who is allotted to which hostel/room
 
-📝 Leave Management
+- Update or vacate room allotments
 
-Students can request leaves
+### 📝 Leave Management
 
-Admin can approve/reject leave requests
+- Students can request leaves
 
-🛠 Maintenance Requests
+- Admin can approve/reject leave requests
 
-Students can raise complaints
+### 🛠 Maintenance Requests
 
-Admin can track status (pending/resolved)
+- Students can raise complaints
 
-📢 Notices
+- Admin can track status (pending/resolved)
 
-Admin can publish notices displayed on frontend
+### 📢 Notices
 
-🏗️ Tech Stack
-Frontend
+- Admin can publish notices displayed on frontend
 
-HTML5 / CSS3
+## 🏗️ Tech Stack
 
-JavaScript (Vanilla)
+### Frontend
 
-Fetch API for backend communication
+- HTML5 / CSS3
 
-Backend
+- JavaScript (Vanilla)
 
-Node.js
+- Fetch API for backend communication
 
-Express.js
+### Backend
 
-MySQL2 (Promise-based)
+- Node.js
 
-Database
+- Express.js
 
-MySQL
+- MySQL2 (Promise-based)
 
-Structured SQL schema included (database/hostel_database.sql)
+### Database
 
-📁 Project Structure
+- MySQL
+
+- Structured SQL schema included (database/hostel_database.sql)
+
+## 📁 Project Structure
+
 hostel-dbms/
-├── backend/
-│   ├── db/
-│   │   ├── db.js
-│   │   └── index.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── students.js
-│   │   ├── rooms.js
-│   │   ├── hostels.js
-│   │   ├── allotments.js
-│   │   ├── leaves.js
-│   │   ├── maintenance.js
-│   │   └── notices.js
-│   ├── server.js
-│   ├── package.json
-│   └── .env
-│
-├── frontend/
-│   ├── index.html
-│   ├── admin/
-│   │   ├── allotment.html
-│   │   └── ...
-│   ├── css/
-│   ├── js/
-│   │   ├── frontend.js
-│   │   └── admin-allotment.js
-│
-└── database/
-    └── hostel_database.sql
 
-🔧 Installation & Setup
-1️⃣ Clone the repository
+├── backend/
+
+│   ├── db/
+
+│   │   ├── db.js
+
+│   │   └── index.js
+
+│   ├── routes/
+
+│   │   ├── auth.js
+
+│   │   ├── students.js
+
+│   │   ├── rooms.js
+
+│   │   ├── hostels.js
+
+│   │   ├── allotments.js
+
+│   │   ├── leaves.js
+
+│   │   ├── maintenance.js
+
+│   │   └── notices.js
+
+│   ├── server.js
+
+│   ├── package.json
+
+│   └── .env
+
+│
+
+├── frontend/
+
+│   ├── index.html
+
+│   ├── admin/
+
+│   │   ├── allotment.html
+
+│   │   └── ...
+
+│   ├── css/
+
+│   ├── js/
+
+│   │   ├── frontend.js
+
+│   │   └── admin-allotment.js
+
+│
+
+└── database/── hostel_database.sql
+
+## 🔧 Installation & Setup
+
+### 1️⃣ Clone the repository
+
 git clone https://github.com/your-username/hostel-dbms.git
+
 cd hostel-dbms/backend
 
-2️⃣ Install backend dependencies
-npm install
+## 2️⃣Install backend dependencies
 
-3️⃣ Configure environment variables
+`npm install`
+
+## 3️⃣ Configure environment variables
 
 Create .env inside /backend:
 
 DB_HOST=localhost
+
 DB_USER=root
+
 DB_PASS=yourpassword
+
 DB_NAME=hostel_mgmt_database
+
 PORT=5500
 
-4️⃣ Import the MySQL Database
+## 4️⃣ Import the MySQL Database
 
 Open MySQL and run:
 
-SOURCE database/hostel_database.sql;
+`SOURCE database/hostel_database.sql;`
 
 
 (or import using phpMyAdmin / MySQL Workbench)
 
-5️⃣ Start the Backend Server
+## 5️⃣ Start the Backend Server
 npm start
 
 
 Server runs at:
 👉 http://localhost:5500
 
-6️⃣ Open the Frontend
+## 6️⃣ Open the Frontend
 
 Simply open frontend/index.html in a browser.
+
 (Or use Live Server in VS Code)
 
-🔌 API Endpoints Overview
-Auth
-Method	Endpoint	Description
-POST	/auth/login	Admin login
-Students
-Method	Endpoint	Description
-GET	/students	Get all students
-POST	/students	Add student
-PUT	/students/:id	Update
-DELETE	/students/:id	Delete
-Rooms
-
-| GET | /rooms
-| POST | /rooms
-| PUT | /rooms/:id
-| DELETE | /rooms/:id
-
-Hostels
-
-| GET | /hostels
-| POST | /hostels
-
-Allotments
-
-| GET | /allotments
-| POST | /allotments
-
-Leaves
-
-| POST | /leaves (request)
-| GET | /leaves
-
-Maintenance
-
-| POST | /maintenance
-| GET | /maintenance
-
-Notices
-
-| POST | /notices
-| GET | /notices
-
-🛡 Security Notes
-
-Authentication currently uses a demo token.
-You can upgrade to JWT (jsonwebtoken) anytime.
-
-Passwords are stored in plain text in this version.
-Use bcrypt to secure user passwords.
-
-📌 Future Improvements
-
-Full JWT-based authentication
-
-Role-based access (Admin/Warden/Student)
-
-React or Next.js frontend
-
-Attendance system integration
-
-Image/file uploads for student IDs
-
-Email/SMS notifications
-
-🤝 Contributing
-
-Pull requests are welcome!
-For major changes, please open an issue first to discuss the feature you want to add.
+# To be updated soon
 
 📜 License
 
