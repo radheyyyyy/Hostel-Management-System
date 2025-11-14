@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin — Notices</title>
+<link rel="stylesheet" href="./styles/styles.css"/>
+</head>
+<body>
+  <main class="container">
+    <h2>Admin — Notices</h2>
+    <div id="msg" class="msg" style="display:none;"></div>
+
+    <section class="card-plain">
+      <h3>Post Notice</h3>
+      <form id="noticeForm" class="grid">
+        <input name="title" placeholder="Title" required />
+        <textarea name="body" placeholder="Notice body" rows="4" required></textarea>
+        <select name="audience" id="audienceSelect">
+          <option value="all">All Hostels</option>
+          <option value="hostel">Specific Hostel</option>
+        </select>
+        <select name="hostel_id" id="noticeHostel" style="display:none;">
+          <option value="">Select Hostel</option>
+        </select>
+        <button type="submit">Post Notice</button>
+      </form>
+    </section>
+
+    <section style="margin-top:18px">
+      <h3>All Notices</h3>
+      <div id="noticesList"></div>
+    </section>
+  </main>
+
+  <script src="./js/frontend.js"></script>
+  <script>
+    (async function(){
+      const audience = document.getElementById('audienceSelect');
+      const noticeHostel = document.getElementById('noticeHostel');
+      const noticesList = document.getElementById('noticesList');
+
+      // load hostels for hostel select
+      const hostelsRes = await apiGet('/api/hostels');
+      const hostels = hostelsRes?.hostels || [];
+      noticeHostel.innerHTML = '<option value="">Select Hostel</option>';
+      hostels.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value = h.id; opt.textContent = h.name;
+        noticeHostel.appendChild(opt);
+      });
+
+      audience.addEventListener('change', () => {
+        noticeHostel.style.display = audience.value === 'hostel' ? 'block' : 'none';
+      });
+
+      document.getElementById('noticeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const body = Object.fromEntries(fd.entries());
+        body.hostel_id = body.audience === 'hostel' ? body.hostel_id : null;
+        const res = await apiPost('/api/notices', body);
+        if (res && res.success) {
+          showMsg('msg', 'Notice posted');
+          loadNotices();
+          e.target.reset();
+        } else {
+          showMsg('msg', 'Failed to post notice', true);
+        }
+      });
+
+      async function loadNotices() {
+        const res = await apiGet('/api/notices');
+        const list = res?.notices || [];
+        noticesList.innerHTML = list.map(n => `
+          <div style="padding:10px;border-radius:8px;background:#fff;margin-bottom:8px">
+            <strong>${n.title}</strong>
+            <div style="font-size:0.95rem;color:#333;margin:6px 0">${n.body}</div>
+            <div style="font-size:0.85rem;color:#666">Audience: ${n.audience}${n.hostel_id ? ' (hostel id:'+n.hostel_id+')' : ''} • ${n.created_at}</div>
+          </div>
+        `).join('') || '<p>No notices yet</p>';
+      }
+
+      loadNotices();
+    })();
+  </script>
+</body>
+</html>

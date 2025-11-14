@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Student Login - Hostel DBMS</title>
+  <link rel="stylesheet" href="./styles/styles.css"/>
+</head>
+<body>
+  <main class="container center-card">
+    <div class="auth-card">
+      <h2>Student Login</h2>
+      <form id="studentLogin">
+        <label>Student ID
+          <input name="student_id" required />
+        </label>
+        <label>Password
+          <input name="password" type="password" />
+        </label>
+        <div class="row gap">
+          <button class="btn" type="submit">Login</button>
+          <a class="btn btn-outline" href="index.html">Back</a>
+        </div>
+      </form>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+  </main>
+
+  <script src="./js/frontend.js"></script>
+  <script>
+    document.getElementById('studentLogin').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const data = Object.fromEntries(fd.entries());
+      // backend route: POST /api/students/login {student_id, password}
+      const res = await apiPost('/api/students/login', data);
+      if (res && res.student) {
+        localStorage.setItem('studentData', JSON.stringify(res.student));
+        location.href = 'student-dashboard.html';
+      } else {
+        showMsg('loginMsg', res?.error || 'Login failed', true);
+      }
+    });
+  </script>
+</body>
+</html>

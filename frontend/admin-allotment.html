@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin — Room Allotment</title>
+  <link rel="stylesheet" href="./styles/styles.css"/>
+</head>
+<body>
+  <main class="container">
+    <h2>Admin — Room Allotment & Student Management</h2>
+
+    <div id="msg" class="msg" style="display:none;"></div>
+
+    <section class="card-plain">
+      <h3>Add Student & Allot Room</h3>
+      <form id="addAndAllotForm" class="grid">
+        <input name="student_id" placeholder="Student ID (eg: S2001)" required />
+        <input name="name" placeholder="Full Name" required />
+        <input name="phone" placeholder="Phone Number" />
+        <select name="hostel_name" id="hostelSelect" required>
+          <option value="">Select Hostel</option>
+        </select>
+        <select name="room_id" id="roomSelect" required>
+          <option value="">Select Room (will show available rooms)</option>
+        </select>
+        <button type="submit">Add & Allot</button>
+      </form>
+      <p style="margin-top:8px;font-size:0.95rem;color:#444;">
+        Tip: If a room is already full it will not appear in the room list. Each room holds 2 students.
+      </p>
+    </section>
+
+    <section style="margin-top:18px" class="card-plain">
+      <h3>Hostel Overview</h3>
+      <div id="hostelSummary"></div>
+
+      <h4 style="margin-top:12px">Rooms (select a hostel to filter)</h4>
+      <select id="hostelFilter"><option value="">All hostels</option></select>
+      <table id="roomsTable" style="margin-top:8px">
+        <thead>
+          <tr><th>Hostel</th><th>Room No</th><th>Capacity</th><th>Occupied</th><th>Vacant</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="./js/frontend.js"></script>
+  <script src="./js/admin-allotment.js"></script>
+</body>
+</html>

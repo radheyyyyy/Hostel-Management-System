@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin — Leave Requests</title>
+  <link rel="stylesheet" href="./styles/styles.css"/>
+</head>
+<body>
+  <main class="container">
+    <h2>Admin — Leave Requests</h2>
+    <div id="msg" class="msg" style="display:none;"></div>
+
+    <table id="leavesTable">
+      <thead><tr><th>ID</th><th>Student ID</th><th>Name</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+   <script src="./js/frontend.js"></script>
+  
+  <script>
+    async function loadLeaves() {
+      const res = await apiGet('/api/leaves');
+      const rows = res?.leaves || [];
+      const tbody = document.querySelector('#leavesTable tbody');
+      tbody.innerHTML = '';
+      for (const l of rows) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${l.id}</td>
+                        <td>${l.student_id}</td>
+                        <td>${l.student_name || ''}</td>
+                        <td>${l.from_date}</td>
+                        <td>${l.to_date}</td>
+                        <td>${l.reason}</td>
+                        <td>${l.status}</td>
+                        <td>
+                          <button class="approve" data-id="${l.id}">Approve</button>
+                          <button class="reject" data-id="${l.id}">Reject</button>
+                        </td>`;
+        tbody.appendChild(tr);
+      }
+
+      document.querySelectorAll('button.approve').forEach(b=>{
+        b.onclick = async ()=> {
+          const id = b.dataset.id;
+          await apiPut(`/api/leaves/${encodeURIComponent(id)}/status`, { status: 'approved' });
+          loadLeaves();
+        };
+      });
+      document.querySelectorAll('button.reject').forEach(b=>{
+        b.onclick = async ()=> {
+          const id = b.dataset.id;
+          await apiPut(`/api/leaves/${encodeURIComponent(id)}/status`, { status: 'rejected' });
+          loadLeaves();
+        };
+      });
+    }
+
+    loadLeaves();
+  </script>
+</body>
+</html>
