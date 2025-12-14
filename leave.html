@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Leave Application</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Leave Application</h2>
+    <form id="lForm" class="grid card-plain">
+      <input type="date" name="from_date" required />
+      <input type="date" name="to_date" required />
+      <textarea name="reason" placeholder="Reason" required></textarea>
+      <button type="submit">Apply</button>
+    </form>
+
+    <h3 style="margin-top:16px;">My Leave Applications</h3>
+    <table id="lTable">
+      <thead><tr><th>ID</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th>Applied</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    const data = JSON.parse(localStorage.getItem('studentData') || 'null');
+    if (!data) location.href='student-login.html';
+
+    async function loadMine(){
+      const res = await apiGet('/api/leaves/mine/' + data.student_id);
+      const tbody = document.querySelector('#lTable tbody');
+      tbody.innerHTML = '';
+      (res?.leaves || []).forEach(l=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${l.id}</td>
+          <td>${l.from_date}</td>
+          <td>${l.to_date}</td>
+          <td>${l.reason}</td>
+          <td>${l.status}</td>
+          <td>${new Date(l.applied_at).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('lForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      body.student_id = data.student_id; // backend derives hostel
+      await apiPost('/api/leaves', body);
+      e.target.reset();
+      loadMine();
+    });
+
+    loadMine();
+  </script>
+</body>
+</html>

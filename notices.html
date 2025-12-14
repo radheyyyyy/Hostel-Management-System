@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Notices (Admin)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Post Notice</h2>
+    <form id="noticeForm" class="grid card-plain">
+      <input name="title" placeholder="Title" required />
+      <textarea name="body" placeholder="Body" required></textarea>
+      <select name="audience" id="audienceSelect" required>
+        <option value="all">All Hostels</option>
+        <option value="hostel">Specific Hostel</option>
+      </select>
+      <select name="hostel_id" id="hostelSelect" disabled></select>
+      <button type="submit">Publish</button>
+    </form>
+
+    <h3 style="margin-top:16px;">Recent Notices</h3>
+    <div id="list"></div>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    async function loadHostels(){
+      const res = await apiGet('/api/hostels');
+      const sel = document.getElementById('hostelSelect');
+      sel.innerHTML = '<option value="" disabled selected>Select Hostel</option>';
+      (res?.hostels || []).forEach(h=>{
+        const opt = document.createElement('option');
+        opt.value = h.id; opt.textContent = h.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    async function loadNotices(){
+      const res = await apiGet('/api/notices');
+      const div = document.getElementById('list');
+      div.innerHTML = '';
+      (res?.notices || []).forEach(n=>{
+        const box = document.createElement('div');
+        box.className='card-plain';
+        box.innerHTML = `
+          <h4>${n.title}</h4>
+          <p>${n.body}</p>
+          <p><strong>Audience:</strong> ${n.audience === 'all' ? 'All' : (n.hostel_name || 'Hostel')}</p>
+          <p><em>${new Date(n.created_at).toLocaleString()}</em></p>
+        `;
+        div.appendChild(box);
+      });
+    }
+
+    document.getElementById('audienceSelect').addEventListener('change', (e)=>{
+      document.getElementById('hostelSelect').disabled = e.target.value !== 'hostel';
+    });
+
+    document.getElementById('noticeForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      if (body.audience === 'hostel') body.hostel_id = Number(body.hostel_id);
+      await apiPost('/api/notices', body);
+      e.target.reset();
+      loadNotices();
+    });
+
+    (async()=>{
+      if (!localStorage.getItem('adminToken')) location.href='admin-login.html';
+      await loadHostels();
+      await loadNotices();
+    })();
+  </script>
+</body>
+</html>

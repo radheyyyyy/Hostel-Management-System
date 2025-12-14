@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Admin Dashboard - Students</h2>
+    <div class="top-actions">
+      <a class="card" href="notices.html">Notices</a>
+      <a class="card" href="maintenance-admin.html">Maintenance</a>
+      <a class="card" href="leaves-admin.html">Leaves</a>
+      <button id="refreshBtn">Refresh</button>
+      <button id="logoutBtn">Logout</button>
+    </div>
+
+    <h3>Add Student</h3>
+    <form id="addStudentForm" class="grid">
+      <input name="student_id" placeholder="Student ID" required />
+      <input name="name" placeholder="Name" required />
+      <input name="phone" placeholder="Phone" />
+      <select name="hostel_id" id="hostelSelect" required></select>
+      <input name="room_number" placeholder="Room Number" />
+      <button type="submit">Add</button>
+    </form>
+
+    <h3 style="margin-top:16px;">All Students</h3>
+    <table id="studentsTable">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Hostel</th><th>Room</th><th>Actions</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    async function loadHostels(){
+      const res = await apiGet('/api/hostels');
+      const sel = document.getElementById('hostelSelect');
+      sel.innerHTML = '<option value="" disabled selected>Select Hostel</option>';
+      (res?.hostels || []).forEach(h=>{
+        const opt = document.createElement('option');
+        opt.value = h.id; opt.textContent = h.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    async function loadStudents(){
+      const res = await apiGet('/api/students');
+      const tbody = document.querySelector('#studentsTable tbody');
+      tbody.innerHTML = '';
+      (res?.students || []).forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.student_id}</td>
+          <td>${s.name}</td>
+          <td>${s.phone || ''}</td>
+          <td>${s.hostel_name}</td>
+          <td>${s.room_number || ''}</td>
+          <td>
+            <button class="del" data-id="${s.student_id}">Delete</button>
+            <button class="edit" data-id="${s.student_id}">Edit</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('button.del').forEach(btn=>{
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          if (!confirm('Delete student ' + id + '?')) return;
+          await apiDelete('/api/students/' + encodeURIComponent(id));
+          loadStudents();
+        };
+      });
+
+      document.querySelectorAll('button.edit').forEach(btn=>{
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const row = btn.closest('tr').children;
+          const name = prompt('Name', row[1].innerText);
+          if (name == null) return;
+          const phone = prompt('Phone', row[2].innerText) || '';
+          const room = prompt('Room Number', row[4].innerText) || '';
+          // choose hostel again
+          const resH = await apiGet('/api/hostels');
+          const currentHostel = row[3].innerText;
+          const choice = prompt('Hostel ID (choose):\n' + (resH.hostels.map(h => `${h.id}: ${h.name}${h.name===currentHostel?' (current)':''}`).join('\n')));
+          if (choice == null) return;
+          const hostel_id = Number(choice);
+          await apiPut('/api/students/' + encodeURIComponent(id), { name, phone, room_number: room, hostel_id });
+          loadStudents();
+        };
+      });
+    }
+
+    document.getElementById('addStudentForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      body.hostel_id = Number(body.hostel_id);
+      await apiPost('/api/students', body);
+      e.target.reset();
+      loadStudents();
+    });
+
+    document.getElementById('refreshBtn').onclick = ()=>{ loadStudents(); };
+    document.getElementById('logoutBtn').onclick = ()=>{ localStorage.removeItem('adminToken'); location.href='admin-login.html'; };
+
+    (async()=>{
+      if (!localStorage.getItem('adminToken')) location.href='admin-login.html';
+      await loadHostels();
+      await loadStudents();
+    })();
+  </script>
+</body>
+</html>
