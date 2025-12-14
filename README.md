@@ -200,7 +200,9 @@ If this project helped you:
 ## 📧 Contact
 
 Author: Rajyavardhan Radhey
+
 Course: CSE (AI)
+
 University: Chhatrapati Shahu Ji Maharaj University, Kanpur
 
 ## 📌 Recommended Extra Files for GitHub
