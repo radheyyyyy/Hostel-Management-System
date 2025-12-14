@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin | Leave Applications</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .toolbar{display:flex;gap:10px;align-items:center;margin:12px 0}
+    .badge{padding:4px 8px;border-radius:999px;background:#eee;display:inline-block}
+    .badge.pending{background:#fff7cc}
+    .badge.approved{background:#d6ffd9}
+    .badge.rejected{background:#ffd6d6}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h2>Leave Applications (Admin)</h2>
+
+    <div class="toolbar card-plain">
+      <input id="filterStudent" placeholder="Filter by Student ID" />
+      <select id="filterStatus">
+        <option value="">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button id="refreshBtn">Refresh</button>
+      <span id="countInfo" class="muted"></span>
+    </div>
+
+    <table id="leavesTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Student ID</th>
+          <th>Student Name</th>
+          <th>Hostel</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Applied At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    let RAW = [];
+
+    function badge(status){
+      const s = String(status||'').toLowerCase();
+      return `<span class="badge ${s}">${s || 'pending'}</span>`;
+    }
+
+    function draw(){
+      const tbody = document.querySelector('#leavesTable tbody');
+      const q = document.getElementById('filterStudent').value.trim().toLowerCase();
+      const st = document.getElementById('filterStatus').value;
+
+      const rows = RAW.filter(r=>{
+        const okStudent = q ? String(r.student_id||'').toLowerCase().includes(q) : true;
+        const okStatus = st ? String(r.status||'').toLowerCase() === st : true;
+        return okStudent && okStatus;
+      });
+
+      document.getElementById('countInfo').textContent = `${rows.length} shown / ${RAW.length} total`;
+      tbody.innerHTML = '';
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.id}</td>
+          <td>${r.student_id}</td>
+          <td>${r.student_name || ''}</td>
+          <td>${r.hostel_name || ''}</td>
+          <td>${r.from_date}</td>
+          <td>${r.to_date}</td>
+          <td>${r.reason}</td>
+          <td>${badge(r.status)}</td>
+          <td>${r.applied_at || ''}</td>
+          <td>
+            <button class="set" data-id="${r.id}" data-s="approved">Approve</button>
+            <button class="set" data-id="${r.id}" data-s="rejected">Reject</button>
+            <button class="set" data-id="${r.id}" data-s="pending">Reset</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('button.set').forEach(b=>{
+        b.onclick = async () => {
+          const id = b.dataset.id;
+          const status = b.dataset.s;
+          await apiPut('/api/leaves/' + id + '/status', { status });
+          await load();
+        };
+      });
+    }
+
+    async function load(){
+      const res = await apiGet('/api/leaves'); // GET from server
+      // Expecting: { leaves: [ {id, student_id, student_name, from_date, to_date, reason, status, applied_at} ] }
+      RAW = (res && res.leaves) ? res.leaves : [];
+      draw();
+    }
+
+    document.getElementById('refreshBtn').onclick = load;
+    document.getElementById('filterStudent').oninput = draw;
+    document.getElementById('filterStatus').onchange = draw;
+
+    // Require admin login token (if you use it)
+    (async ()=>{
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        // if you do not enforce token, remove this redirect
+        // location.href = 'admin-login.html';
+      }
+      await load();
+    })();
+  </script>
+</body>
+</html>

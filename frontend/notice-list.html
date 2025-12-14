@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Notices</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Notices</h2>
+    <div id="list"></div>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    const data = JSON.parse(localStorage.getItem('studentData') || 'null');
+    if (!data) location.href='student-login.html';
+
+    async function loadNotices(){
+      const res = await apiGet('/api/notices?hostel_id=' + data.hostel_id);
+      const div = document.getElementById('list');
+      div.innerHTML = '';
+      (res?.notices || []).forEach(n=>{
+        const box = document.createElement('div');
+        box.className='card-plain';
+        box.innerHTML = `
+          <h4>${n.title}</h4>
+          <p>${n.body}</p>
+          <p><strong>Audience:</strong> ${n.audience === 'all' ? 'All hostels' : (n.hostel_name || '')}</p>
+          <p><em>${new Date(n.created_at).toLocaleString()}</em></p>
+        `;
+        div.appendChild(box);
+      });
+    }
+    loadNotices();
+  </script>
+</body>
+</html>
