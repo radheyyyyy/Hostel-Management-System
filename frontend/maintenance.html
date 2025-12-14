@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Maintenance Request</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Maintenance Request</h2>
+    <form id="mForm" class="grid card-plain">
+      <input name="category" placeholder="Category (e.g., Electrical)" required />
+      <textarea name="description" placeholder="Describe the issue" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+
+    <h3 style="margin-top:16px;">My Tickets</h3>
+    <table id="tTable">
+      <thead><tr><th>ID</th><th>Category</th><th>Description</th><th>Status</th><th>Created</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    const data = JSON.parse(localStorage.getItem('studentData') || 'null');
+    if (!data) location.href='student-login.html';
+
+    async function loadMine(){
+      const res = await apiGet('/api/maintenance/mine/' + data.student_id);
+      const tbody = document.querySelector('#tTable tbody');
+      tbody.innerHTML = '';
+      (res?.tickets || []).forEach(t=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${t.id}</td>
+          <td>${t.category}</td>
+          <td>${t.description}</td>
+          <td>${t.status}</td>
+          <td>${new Date(t.created_at).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('mForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      body.student_id = data.student_id; // hostel auto at backend
+      await apiPost('/api/maintenance', body);
+      e.target.reset();
+      loadMine();
+    });
+
+    loadMine();
+  </script>
+</body>
+</html>

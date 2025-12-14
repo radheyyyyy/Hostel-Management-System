@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h2>Admin Login</h2>
+    <form id="adminLoginForm">
+      <label>Username
+        <input type="text" id="username" required />
+      </label>
+      <label>Password
+        <input type="password" id="password" required />
+      </label>
+      <button type="submit">Login</button>
+    </form>
+    <div id="msg" class="msg"></div>
+  </main>
+
+  <script src="frontend.js"></script>
+  <script>
+    const adminForm = document.getElementById('adminLoginForm');
+    adminForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const res = await apiPost('/api/admin/login', { username, password });
+      if (res && res.token) {
+        // store token in localStorage for demo
+        localStorage.setItem('adminToken', res.token);
+        location.href = 'admin-dashboard.html';
+      } else {
+        showMsg('msg', res?.message || 'Login failed', true);
+      }
+    });
+  </script>
+</body>
+</html>
