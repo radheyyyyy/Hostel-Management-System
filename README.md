@@ -1,115 +1,65 @@
-# 📚 Hostel Management System
+# 📘 Hostel Management System
 
-A complete Hostel Management System (HMS) built using Node.js, Express, MySQL, and a lightweight HTML/CSS/JS frontend.
-This project manages students, rooms, allotments, leaves, maintenance, and notices — all through a simple API-driven admin panel.
+A simple Hostel Management System web application designed for students and beginners to understand full-stack development using HTML, CSS, Node.js, Express, and MySQL.
+
+This project can be used for:
+
+* College mini / major projects
+
+* Learning full-stack web development
+
+* Hostel or student management system demos
+
 
 ## 🚀 Features
 
-### 🔐 Authentication
+* Student Login System
 
-- Admin login system
+* Admin Dashboard
 
-- Secure route handling
+* Student Dashboard
 
-- Token-based authentication (demo token — can be upgraded to JWT)
+* Hostel & Student Data Management
 
-### 🧑‍🎓 Student Management
+* MySQL Database Integration
 
-- Add new students
+* Simple and beginner-friendly UI
 
-- View all registered students
 
-- Update or delete student entries
-
-### 🏠 Room & Hostel Management
-
-- Add and manage hostel blocks
-
-- Add, view, update, or delete rooms
-
-- Track room capacity and availability
-
-### 🛏 Allotment System
-
-- Assign students to rooms
-
-- Track who is allotted to which hostel/room
-
-- Update or vacate room allotments
-
-### 📝 Leave Management
-
-- Students can request leaves
-
-- Admin can approve/reject leave requests
-
-### 🛠 Maintenance Requests
-
-- Students can raise complaints
-
-- Admin can track status (pending/resolved)
-
-### 📢 Notices
-
-- Admin can publish notices displayed on frontend
-
-## 🏗️ Tech Stack
-
+## 🛠️ Tech Stack
 ### Frontend
 
-- HTML5 / CSS3
+* HTML5
 
-- JavaScript (Vanilla)
+* CSS3
 
-- Fetch API for backend communication
+* JavaScript
 
 ### Backend
 
-- Node.js
+* Node.js
 
-- Express.js
-
-- MySQL2 (Promise-based)
+* Express.js
 
 ### Database
 
-- MySQL
+* MySQL
 
-- Structured SQL schema included (database/hostel_database.sql)
 
-## 📁 Project Structure
 
-hostel-dbms/
+## 📂 Project Structure
+
+Hostel Management System/
+
+│
 
 ├── backend/
-
-│   ├── db/
-
-│   │   ├── db.js
-
-│   │   └── index.js
-
-│   ├── routes/
-
-│   │   ├── auth.js
-
-│   │   ├── students.js
-
-│   │   ├── rooms.js
-
-│   │   ├── hostels.js
-
-│   │   ├── allotments.js
-
-│   │   ├── leaves.js
-
-│   │   ├── maintenance.js
-
-│   │   └── notices.js
 
 │   ├── server.js
 
 │   ├── package.json
+
+│   ├── package-lock.json
 
 │   └── .env
 
@@ -117,76 +67,135 @@ hostel-dbms/
 
 ├── frontend/
 
-│   ├── index.html
+│   ├── admin-dashboard.html
 
-│   ├── admin/
+│   ├── student-dashboard.html
 
-│   │   ├── allotment.html
+│   ├── student-login.html
 
-│   │   └── ...
-
-│   ├── css/
-
-│   ├── js/
-
-│   │   ├── frontend.js
-
-│   │   └── admin-allotment.js
+│   └── styles.css
 
 │
 
-└── database/── hostel_database.sql
+├── database/
 
-## 🔧 Installation & Setup
+│   └── hostel_mgmt.sql
 
-### 1️⃣ Clone the repository
+│
 
-git clone https://github.com/your-username/hostel-dbms.git
+└── README.md
 
-cd hostel-dbms/backend
+## ⚙️ Installation & Setup
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/your-username/hostel-management-system.git
+cd hostel-management-system
+```
 
-## 2️⃣Install backend dependencies
+### 2️⃣ Backend Setup
+```bash
+cd backend
+npm install
+```
 
-`npm install`
+Create a `.env` file inside the `backend` folder:
 
-## 3️⃣ Configure environment variables
-
-Create .env inside /backend:
+```bash
+PORT=3000
 
 DB_HOST=localhost
 
-DB_USER=root
+DB_USER=root #change it if needed
 
-DB_PASS=yourpassword
+DB_PASSWORD=your_password
 
-DB_NAME=hostel_mgmt_database
+DB_NAME=hostel_mgmt
+```
+### 3️⃣ Database Setup
 
-PORT=5500
+1. Open **phpMyAdmin** or MySQL CLI
 
-## 4️⃣ Import the MySQL Database
+2. Create a database named:
+```bash
+CREATE DATABASE hostel_mgmt;
+```
 
-Open MySQL and run:
+3. Import the file:
+```bas
+database/hostel_mgmt.sql
+```
+### 4️⃣ Run the Server
+```bash
+node server.js
+```
 
-`SOURCE database/hostel_database.sql;`
+Server will start at:
+```bash
+http://localhost:5500
+```
+### 5️⃣ Frontend Usage
 
+* Open `frontend/student-login.html` in your browser
 
-(or import using phpMyAdmin / MySQL Workbench)
+* Admin and Student dashboards can be accessed after login
 
-## 5️⃣ Start the Backend Server
-npm start
+## 👨‍🎓 Who Can Use This Project?
 
+* BCA / MCA / B.Tech / Diploma Students
 
-Server runs at:
-👉 http://localhost:5500
+* Beginners learning Node.js & MySQL
 
-## 6️⃣ Open the Frontend
+* Students working on academic projects
 
-Simply open frontend/index.html in a browser.
+## 📌 Important Notes
 
-(Or use Live Server in VS Code)
+* This project is made for learning purposes
 
-# To be updated soon
+* Security features are basic
 
-📜 License
+* Feel free to improve UI, validation, and authentication
 
-This project is open-source under the MIT License.
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+
+1. Create a new branch
+
+1. Make your changes
+
+1. Submit a Pull Request
+
+## 📜 License
+
+This project is licensed under the MIT License
+
+You are free to use, modify, and distribute it for educational purposes.
+
+## ⭐ Support
+
+If this project helped you:
+
+* Give it a ⭐ on GitHub
+
+* Share it with other students
+
+## 📧 Contact
+
+Author: Rajyavardhan Radhey
+Course: CSE (AI)
+University: Chhatrapati Shahu Ji Maharaj University, Kanpur
+
+## 📌 Recommended Extra Files for GitHub
+
+You should also add these files:
+
+`.gitignore`
+```bash
+node_modules/
+.env
+```
+`LICENSE`
+
+Use **MIT License** (best for student projects)
