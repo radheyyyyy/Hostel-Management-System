@@ -111,6 +111,22 @@ DB_PASSWORD=your_password
 
 DB_NAME=hostel_mgmt
 ```
+## 🔧 Database Configuration (Important)
+
+After cloning the project, you **must update the database credentials**
+inside the `backend/server.js` file according to your system.
+
+### Example:
+```js
+// ===== DB CONFIG =====
+const dbConfig = {
+  host: 'localhost',
+  user: 'root',          // change if needed
+  password: '',          // your MySQL password
+  database: 'hostel_mgmt', // your database name
+  port: 3306
+};
+```
 ### 3️⃣ Database Setup
 
 1. Open **phpMyAdmin** or MySQL CLI
